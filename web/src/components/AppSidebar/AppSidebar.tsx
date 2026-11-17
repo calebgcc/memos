@@ -41,6 +41,7 @@ import { collectionNavigationPath, ROUTES } from "@/router/routes";
 import { User_Role, UserNotification_Status } from "@/types/proto/api/user_service_pb";
 import { useTranslate } from "@/utils/i18n";
 import CommonSidebarContent from "./CommonSidebarContent";
+import OnThisDayRow from "./OnThisDayRow";
 import { getSidebarRouteKind } from "./routes";
 import SidebarRow, { SIDEBAR_ROW_CLASSES, SidebarRowIconSlot, sidebarRowStateClasses } from "./SidebarRow";
 import SidebarSection, { SIDEBAR_SECTION_STACK_CLASSES } from "./SidebarSection";
@@ -103,6 +104,7 @@ const CollectionSidebarContent = ({
       {showStatistics && (
         <SidebarSection ariaLabel={t("common.statistics")}>
           <StatisticsView statisticsData={statistics} onDateSelect={() => setMobileOpen(false)} />
+          <OnThisDayRow activityStats={statistics.activityStats} onSelect={() => setMobileOpen(false)} />
         </SidebarSection>
       )}
       {/* Every collection route narrows the same way: views (yours, so signed-in only), days, tags. */}

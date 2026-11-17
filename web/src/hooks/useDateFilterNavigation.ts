@@ -9,7 +9,12 @@ export const useDateFilterNavigation = () => {
 
   const navigateToDateFilter = useCallback(
     (date: string) => {
-      const nextFilters = replaceFiltersByFactor(filters, "displayTime", [{ factor: "displayTime", value: date }]);
+      // A picked day and "On this day" would AND into an empty list, so the day replaces both.
+      const nextFilters = replaceFiltersByFactor(
+        filters.filter((filter) => filter.factor !== "onThisDay"),
+        "displayTime",
+        [{ factor: "displayTime", value: date }],
+      );
       const nextSearchParams = new URLSearchParams(location.search);
       nextSearchParams.set("filter", stringifyFilters(nextFilters));
       setFilters(nextFilters);

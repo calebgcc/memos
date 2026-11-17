@@ -29,6 +29,26 @@ export const parseLocalDate = (value: string): Date | undefined => {
   return candidate;
 };
 
+/** How many years back an "On this day" filter reaches. */
+export const ON_THIS_DAY_LOOKBACK_YEARS = 30;
+
+/** The `MM-DD` an "On this day" filter carries for `date`. */
+export const getMonthDay = (date: Date = new Date()): string => dayjs(date).format("MM-DD");
+
+/**
+ * The `YYYY-MM-DD` days sharing `monthDay` in each earlier year, newest first. A Feb 29
+ * only exists in leap years, so the other years are skipped rather than rolled into March.
+ */
+export const getOnThisDayDates = (monthDay: string, today: Date = new Date(), years = ON_THIS_DAY_LOOKBACK_YEARS): string[] => {
+  if (!/^\d{2}-\d{2}$/.test(monthDay)) return [];
+  const dates: string[] = [];
+  for (let offset = 1; offset <= years; offset++) {
+    const date = `${today.getFullYear() - offset}-${monthDay}`;
+    if (parseLocalDate(date)) dates.push(date);
+  }
+  return dates;
+};
+
 /** A half-open `[start, end)` window in epoch seconds, in the viewer's local time zone. */
 export interface LocalTimestampRange {
   startTimestamp: number;
@@ -63,6 +83,15 @@ export const getTimeBasisField = (timeBasis: MemoTimeBasis): "created_ts" | "upd
 /** A CEL clause selecting memos whose `field` falls inside `range`. */
 export const buildTimestampRangeFilter = (field: "created_ts" | "updated_ts", range: LocalTimestampRange): string =>
   `${field} >= timestamp(${range.startTimestamp}) && ${field} < timestamp(${range.endTimestamp})`;
+
+/** A CEL clause selecting memos whose `field` falls on any of the `YYYY-MM-DD` `dates`; undefined when none are valid. */
+export const buildDaysFilter = (field: "created_ts" | "updated_ts", dates: string[]): string | undefined => {
+  const clauses = dates
+    .map(getLocalDayTimestampRange)
+    .filter((range): range is LocalTimestampRange => range !== undefined)
+    .map((range) => `(${buildTimestampRangeFilter(field, range)})`);
+  return clauses.length > 0 ? clauses.join(" || ") : undefined;
+};
 
 /** `filter` narrowed to memos whose `timeBasis` timestamp falls inside `range`; unchanged when there is no range. */
 export const withTimestampRange = (

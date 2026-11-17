@@ -389,6 +389,7 @@
     "no-memos-yet": "还没有备忘录",
     "no-matching-memos": "没有符合条件的 Memo",
     "clear-filters": "清除筛选",
+    "on-this-day": "那年今日",
     "pinned": "已置顶",
     "back-to": "返回{{source}}",
     "click-to-show-sensitive-content": "点击显示敏感内容",

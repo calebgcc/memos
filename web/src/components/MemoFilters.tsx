@@ -8,6 +8,7 @@ import {
   CodeIcon,
   EyeIcon,
   HashIcon,
+  HistoryIcon,
   ImageIcon,
   LinkIcon,
   type LucideIcon,
@@ -60,6 +61,10 @@ const FILTER_CONFIGS: Record<FilterFactor, FilterConfig> = {
       const date = dayjs(value);
       return date.isValid() ? date.format(DATE_FILTER_FORMAT) : value;
     },
+  },
+  onThisDay: {
+    icon: HistoryIcon,
+    getLabel: (_, t) => t("memo.on-this-day"),
   },
   pinned: {
     icon: BookmarkIcon,
