@@ -8,6 +8,7 @@ export type FilterFactor =
   | "contentSearch"
   | "celSearch"
   | "displayTime"
+  | "onThisDay"
   | "pinned"
   | "property.hasLink"
   | "property.hasTaskList"

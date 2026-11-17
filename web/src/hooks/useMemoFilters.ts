@@ -3,7 +3,13 @@ import { type MemoFilter, useMemoFilterContext } from "@/contexts/MemoFilterCont
 import { type MemoTimeBasis, useView } from "@/contexts/ViewContext";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoViews } from "@/hooks/useUserQueries";
-import { buildTimestampRangeFilter, getLocalDayTimestampRange, getTimeBasisField } from "@/lib/calendar-utils";
+import {
+  buildDaysFilter,
+  buildTimestampRangeFilter,
+  getLocalDayTimestampRange,
+  getOnThisDayDates,
+  getTimeBasisField,
+} from "@/lib/calendar-utils";
 import { combineCELFilters } from "@/lib/cel-filter";
 import { getMemoViewId } from "@/lib/memo-views";
 import { buildMemoCreatorFilter, getVisibilityName } from "@/lib/resource-names";
@@ -24,7 +30,7 @@ interface BuildMemoFilterOptions {
   includePinned: boolean;
   selectedMemoViewFilter?: string;
   visibilities?: Visibility[];
-  /** Which timestamp a `displayTime` day filter selects on; defaults to creation time. */
+  /** Which timestamp a `displayTime` or `onThisDay` filter selects on; defaults to creation time. */
   timeBasis?: MemoTimeBasis;
 }
 
@@ -76,6 +82,11 @@ export const buildMemoFilter = ({
       const range = getLocalDayTimestampRange(filter.value);
       if (range) {
         conditions.push(buildTimestampRangeFilter(getTimeBasisField(timeBasis), range));
+      }
+    } else if (filter.factor === "onThisDay") {
+      const daysFilter = buildDaysFilter(getTimeBasisField(timeBasis), getOnThisDayDates(filter.value));
+      if (daysFilter) {
+        conditions.push(daysFilter);
       }
     }
   }

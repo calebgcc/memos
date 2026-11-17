@@ -460,6 +460,7 @@
     "no-memos-yet": "No memos yet",
     "no-matching-memos": "No matching memos",
     "clear-filters": "Clear filters",
+    "on-this-day": "On this day",
     "pinned": "Pinned",
     "parent-loading": "Loading original memo…",
     "parent-load-error": "Couldn’t load the original memo.",
