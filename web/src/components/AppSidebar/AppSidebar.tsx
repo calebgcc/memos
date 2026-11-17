@@ -99,13 +99,18 @@ const CollectionSidebarContent = ({
 
   const tagStateScope = isUserLevelCollection ? context : `${creatorUsername ?? "all"}${selectedSpaceName ? `:${selectedSpaceName}` : ""}`;
 
+  const onThisDayRow = <OnThisDayRow activityStats={statistics.activityStats} onSelect={() => setMobileOpen(false)} />;
+
   return (
     <div className={SIDEBAR_SECTION_STACK_CLASSES}>
-      {showStatistics && (
+      {showStatistics ? (
         <SidebarSection ariaLabel={t("common.statistics")}>
           <StatisticsView statisticsData={statistics} onDateSelect={() => setMobileOpen(false)} />
-          <OnThisDayRow activityStats={statistics.activityStats} onSelect={() => setMobileOpen(false)} />
+          {onThisDayRow}
         </SidebarSection>
+      ) : (
+        // Calendar and Map show no filter chips, so an active "On this day" must keep its row to be seen and cleared.
+        onThisDayRow
       )}
       {/* Every collection route narrows the same way: views (yours, so signed-in only), days, tags. */}
       {currentUser && <ViewsSection />}
